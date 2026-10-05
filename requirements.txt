@@ -15,3 +15,4 @@ bertopic==0.15.0
 streamlit==1.26.0
 pytest==7.4.2
 python-dotenv==1.0.0
+gunicorn==21.2.0

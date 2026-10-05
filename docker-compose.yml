@@ -3,17 +3,18 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
+    restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: reviews_db
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-reviews_db}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-reviews_db}"]
+      interval: 10s
       timeout: 5s
       retries: 5
 
@@ -21,13 +22,15 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.api
+    restart: always
     ports:
       - "8000:8000"
     environment:
       - POSTGRES_SERVER=db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=reviews_db
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-reviews_db}
+      - USE_TRANSFORMERS=${USE_TRANSFORMERS:-False}
     depends_on:
       db:
         condition: service_healthy
@@ -38,6 +41,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dashboard
+    restart: always
     ports:
       - "8501:8501"
     environment:
