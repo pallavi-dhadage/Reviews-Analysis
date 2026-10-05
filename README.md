@@ -1,73 +1,24 @@
+# Review Sentiment Intelligence Platform
 
-## 📊 Target Dataset Sources
+A scalable, maintainable, production-ready analytics platform that extracts sentiment, topics, and actionable insights from customer reviews.
 
-- [ ] Amazon Product Reviews
-- [ ] Yelp Open Dataset
-- [ ] Google Play Store Reviews
-- [ ] Twitter API
-- [ ] Kaggle Review Datasets
+## Architecture & Design
+Please see [`docs/design_document.md`](docs/design_document.md) for the complete architecture, data flow, and implementation plan.
 
-## 🔍 Key Analysis Questions
-
-1. What is the overall sentiment trend over time?
-2. Which aspects of products/services get most complaints?
-3. What are the most discussed topics in reviews?
-4. Can we predict review ratings from text?
-5. Which features drive positive vs negative sentiment?
-
-## 📝 Research Notes
-
-### Sentiment Analysis Approaches
-- **Lexicon-based**: VADER, TextBlob
-- **Traditional ML**: TF-IDF + SVM/Logistic Regression
-- **Deep Learning**: LSTM, BERT, RoBERTa
-
-### Topic Modeling Methods
-- Latent Dirichlet Allocation (LDA)
-- Non-negative Matrix Factorization (NMF)
-- BERTopic
-
-### Dataset Considerations
-- Minimum 10,000 reviews for meaningful insights
-- Balanced classes (positive, negative, neutral)
-- Diverse domains for robust model
-
-## 🧪 Potential Use Cases
-
-- E-commerce product review analysis
-- Hotel/customer service feedback
-- Social media sentiment monitoring
-- Brand reputation management
-- Product improvement insights
-
-## 🤝 Resources & References
-
-- [VADER Sentiment Analysis](https://github.com/cjhutto/vaderSentiment)
-- [Hugging Face Transformers](https://huggingface.co/)
-- [Kaggle Datasets](https://www.kaggle.com/datasets)
-- [spaCy Documentation](https://spacy.io/)
-- [Streamlit Dashboard](https://streamlit.io/)
-
-## 📈 Next Steps
-
-1. 🗂️ Finalize dataset source
-2. 🔧 Set up development environment
-3. 🚀 Begin data collection phase
-4. 📝 Update documentation as project progresses
-
-## 👥 Contributors
-
-- Your Name - Project Lead
-
-## 📄 License
-
-MIT License - See [LICENSE](LICENSE) for details
-
----
-
-**Status:** 🟡 Planning Phase  
-**Last Updated:** June 2026
-
----
-
-*This project is currently in the initial planning phase. Code development will begin after finalizing requirements and dataset selection.*
+## Setup Instructions
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Start the database and services:
+   ```bash
+   docker-compose up -d
+   ```
+3. Run the API (if not using docker):
+   ```bash
+   uvicorn src.api.main:app --reload
+   ```
+4. Run the Dashboard:
+   ```bash
+   streamlit run dashboard/app.py
+   ```
