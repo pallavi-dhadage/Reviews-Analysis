@@ -1,21 +1,16 @@
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from typing import Dict, Any
+from src.config import settings
 
-class SentimentAnalyzer:
+class BaseSentimentAnalyzer:
+    def analyze_text(self, text: str) -> Dict[str, Any]:
+        raise NotImplementedError
+
+class VaderSentimentAnalyzer(BaseSentimentAnalyzer):
     def __init__(self):
+        from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
         self.analyzer = SentimentIntensityAnalyzer()
     
     def analyze_text(self, text: str) -> Dict[str, Any]:
-        """
-        Analyzes the sentiment of a given text using VADER.
-        
-        Args:
-            text: The cleaned review text.
-            
-        Returns:
-            A dictionary containing the compound score and a label 
-            ('positive', 'negative', 'neutral').
-        """
         if not text or not isinstance(text, str):
             return {"score": 0.0, "label": "neutral"}
             
@@ -34,11 +29,40 @@ class SentimentAnalyzer:
             "label": label
         }
 
-    def analyze_batch(self, texts: list[str]) -> list[Dict[str, Any]]:
-        """
-        Analyzes a batch of texts.
-        """
-        return [self.analyze_text(t) for t in texts]
+class TransformerSentimentAnalyzer(BaseSentimentAnalyzer):
+    def __init__(self):
+        from transformers import pipeline
+        # Use a lightweight robust model for production sentiment
+        self.analyzer = pipeline(
+            "sentiment-analysis", 
+            model="distilbert-base-uncased-finetuned-sst-2-english",
+            truncation=True, 
+            max_length=512
+        )
+        
+    def analyze_text(self, text: str) -> Dict[str, Any]:
+        if not text or not isinstance(text, str):
+            return {"score": 0.0, "label": "neutral"}
+            
+        # pipeline returns [{'label': 'POSITIVE', 'score': 0.99}]
+        result = self.analyzer(text)[0]
+        label = result['label'].lower()
+        score = result['score'] if label == "positive" else -result['score']
+        
+        return {
+            "score": score,
+            "label": label
+        }
+
+def get_sentiment_analyzer() -> BaseSentimentAnalyzer:
+    if settings.USE_TRANSFORMERS:
+        try:
+            return TransformerSentimentAnalyzer()
+        except ImportError:
+            print("Transformers library not installed. Falling back to VADER.")
+            return VaderSentimentAnalyzer()
+    else:
+        return VaderSentimentAnalyzer()
 
 # Singleton instance for the API
-sentiment_analyzer = SentimentAnalyzer()
+sentiment_analyzer = get_sentiment_analyzer()
