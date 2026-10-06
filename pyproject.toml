@@ -1,2 +1,11 @@
+[project]
+name = "reviews-analysis"
+version = "0.1.0"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic"
+]
+
 [tool.vercel]
 entrypoint = "src.api.main:app"
