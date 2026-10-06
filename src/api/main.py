@@ -12,9 +12,16 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# ====================================================================
+# 🛑 VERCEL SERVERLESS FIX:
+# We comment out these two lines because Vercel cannot run create_all 
+# on startup. It will cause the app to timeout and crash.
+# You must create these tables manually in your database or use Alembic.
+# ====================================================================
 # Create tables
-logger.info("Initializing database tables...")
-Base.metadata.create_all(bind=engine)
+# logger.info("Initializing database tables...")
+# Base.metadata.create_all(bind=engine)
+# ====================================================================
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
