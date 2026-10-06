@@ -4,7 +4,11 @@ version = "0.1.0"
 dependencies = [
     "fastapi",
     "uvicorn",
-    "pydantic"
+    "pydantic",
+    "pydantic-settings",
+    "sqlalchemy",
+    "psycopg2-binary", # (Or whichever database driver you are using)
+    "python-dotenv"
 ]
 
 [tool.vercel]
